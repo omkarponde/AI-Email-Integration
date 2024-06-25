@@ -13,10 +13,25 @@ interface OutlookConfig {
   redirectUri: string;
 }
 
+interface RedisConfig {
+  host: string;
+  port: number;
+  password?: string;
+}
+
 interface AppConfig {
   google: GoogleConfig;
   outlook: OutlookConfig;
+  redis: RedisConfig;
 }
+
+const getRedisConfig = (): RedisConfig => {
+  return {
+    host: process.env.REDIS_HOST || 'localhost',
+    port: parseInt(process.env.REDIS_PORT || '6379', 10),
+    password: process.env.REDIS_PASSWORD || undefined,
+  };
+};
 
 const getConfig = (): AppConfig => {
   const googleConfig: GoogleConfig = {
@@ -31,7 +46,7 @@ const getConfig = (): AppConfig => {
     redirectUri: process.env.OUTLOOK_REDIRECT_URI || '',
   };
 
-  // Optionally, you can throw an error if any environment variable is missing
+  // Throw an error if any environment variable is missing
   if (!googleConfig.clientId || !googleConfig.clientSecret || !googleConfig.redirectUri) {
     throw new Error('Missing Google OAuth environment variables');
   }
@@ -43,6 +58,7 @@ const getConfig = (): AppConfig => {
   return {
     google: googleConfig,
     outlook: outlookConfig,
+    redis: getRedisConfig(),
   };
 };
 
