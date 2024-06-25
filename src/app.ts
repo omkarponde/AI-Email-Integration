@@ -8,8 +8,12 @@ dotenv.config();
 const app = express();
 app.use(bodyParser.json());
 
+app.get('/', (req, res) => {
+  res.json({ "ping": 'pong' });
+});
+
 app.use('/gmail', gmailRoutes);
 
-app.listen(3000, () => {
-  console.log('Server is running on port 3000');
+app.listen(8000, () => {
+  console.log('Server is running on port 8000');
 });
